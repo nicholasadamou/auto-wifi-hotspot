@@ -15,6 +15,7 @@ main() {
     find \
         ! ./
         ../src \
+        -type f \
         -exec shellcheck \
                 -e SC1090 \
                 -e SC1091 \
