@@ -12,8 +12,7 @@ main() {
     #
     #  (from: https://twitter.com/astarasikov/status/568825996532707330)
 
-    find \
-        ! ./
+    find
         ../src \
         -type f \
         -exec shellcheck \
