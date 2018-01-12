@@ -13,7 +13,7 @@ main() {
     #  (from: https://twitter.com/astarasikov/status/568825996532707330)
 
     find \
-        ../src/os \
+        ../src \
         -exec shellcheck \
                 -e SC1090 \
                 -e SC1091 \
