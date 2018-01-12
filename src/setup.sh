@@ -86,7 +86,7 @@ setup_auto_hotspot() {
         fi
     fi
 
-    cat < "$x" | EOL
+    cat < "$x" <<-- EOL
     interface=wlan0 
     driver=nl80211 
     ssid="$ssid" 
@@ -115,7 +115,7 @@ setup_auto_hotspot() {
         cp "$x" "$x".bak
     fi
 
-    cat < "$x" | EOL
+    cat < "$x" <<-- EOL
     #Auto-Hotspot configuration
     interface=wlan0
     no-resolv
@@ -139,7 +139,7 @@ setup_auto_hotspot() {
         cp "$x" "$x".bak
     fi
 
-    cat < "$x" | EOL
+    cat < "$x" <<-- EOL
     # interfaces(5) file used by ifup(8) and ifdown(8)
     # Please note that this file is written to be used with dhcpcd
     # For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
@@ -169,7 +169,7 @@ setup_auto_hotspot() {
     uncomment_str "$x" "#net.ipv4.ip_forward=1" "net.ipv4.ip_forward=1"
 
     x="/etc/systemd/system/autohotspot.service"
-    cat < "$x" | EOL
+    cat < "$x" <<-- EOL
     [Unit]
     Description=Automatically generates an internet Hotspot when a valid ssid is not in range
     After=multi-user.target
@@ -181,8 +181,10 @@ setup_auto_hotspot() {
     WantedBy=multi-user.target
     EOL
 
-    execute "sudo systemctl enable autohotspot.service" \
-        "systemctl (enable autohotspot)"
+    if cmd_exists "systemctl"; then
+        execute "sudo systemctl enable autohotspot.service" \
+            "systemctl (enable autohotspot)"
+    fi
 
     if ! cmd_exists "iw"; then
         install_package "iw" "iw"
