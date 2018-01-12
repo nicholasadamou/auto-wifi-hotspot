@@ -56,7 +56,7 @@ ChkWifiUp()
         fi
 }
 #Check to see what SSID's and MAC addresses are in range
-ssidChk=('NoSSid')
+ssidChk='NoSSid'
 for ssid in "${ssidsmac[@]}"
 do
      if { iw dev wlan0 scan ap-force | grep "$ssid"; } >/dev/null 2>&1

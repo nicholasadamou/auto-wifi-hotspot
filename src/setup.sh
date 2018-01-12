@@ -56,7 +56,7 @@ setup_auto_hotspot() {
     )
 
     for PKG in "${PKGS[@]}"; do
-        install_package "$PKG" "$pKG"
+        install_package "$PKG" "$PKG"
         if cmd_exists "systemctl"; then
             execute "sudo systemctl disable $PKG" \
                 "systemctl (disable $PKG)"
@@ -76,9 +76,9 @@ setup_auto_hotspot() {
         PASSWD2="1"
         until [ $PASSWD1 == $PASSWD2 ]; do
             print_question "Type a password to access your PiFi network, then press [ENTER]: "
-            read -s PASSWD1
+            read -s -r PASSWD1
             print_question "Verify password to access your PiFi network, then press [ENTER]: "
-            read -s PASSWD2
+            read -s -r PASSWD2
         done
 
         if [ "$PASSWD1" == "$PASSWD2" ]; then
@@ -86,7 +86,7 @@ setup_auto_hotspot() {
         fi
     fi
 
-    sudo cat > "$FILE" <<- EOF
+    cat > "$FILE" <<- EOF
     interface=wlan0 
     driver=nl80211 
     ssid="$SSID" 
@@ -115,7 +115,7 @@ EOF
         sudo cp "$FILE" "$FILE".bak
     fi
 
-    sudo cat > "$FILE" <<- EOF
+    cat > "$FILE" <<- EOF
     #Auto-Hotspot configuration
     interface=wlan0
     no-resolv
@@ -141,7 +141,7 @@ EOF
         sudo cp "$FILE" "$FILE".bak
     fi
 
-    sudo cat > "$FILE" <<- EOF
+    cat > "$FILE" <<- EOF
     # interfaces(5) file used by ifup(8) and ifdown(8)
     # Please note that this file is written to be used with dhcpcd
     # For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
@@ -150,10 +150,10 @@ EOF
     #auto lo wlan0
     iface lo inet loopback
     iface eth0 inet manual
-    allow-hotplug wlan0
+    allow-hotplug $INTERFACE
     #iface wlan0 inet manual
         wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-    iface wlan0 inet static
+    iface $INTERFACE inet static
             address 192.168.50.5
             netmask 255.255.255.0
             network 192.168.50.0
@@ -174,7 +174,7 @@ EOF
     
     ! [ -f "$FILE" ] && sudo touch "$FILE"
 
-    sudo cat < "$FILE" <<- EOF
+    cat > "$FILE" <<- EOF
     [Unit]
     Description=Automatically generates an internet Hotspot when a valid ssid is not in range
     After=multi-user.target
