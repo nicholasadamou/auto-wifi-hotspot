@@ -57,8 +57,10 @@ setup_auto_hotspot() {
 
     for pkg in "${PKGS[@]}"; do
         install_package "$pkg" "$pkg"
-        execute "sudo systemctl disable $pkg" \
-            "systemctl (disable $pkg)"
+        if cmd_exists "systemctl"; then
+            execute "sudo systemctl disable $pkg" \
+                "systemctl (disable $pkg)"
+        fi
     done
 
     x="/etc/hostapd/hostapd.conf"
