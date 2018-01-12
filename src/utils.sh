@@ -326,7 +326,7 @@ show_spinner() {
 }
 
 uncomment_str() {
-    sed -i "s/^#//g" "$1"
+    sed -i "/$2/  s/^#/$3/g" "$1"
 }
 
 replace_str() {
