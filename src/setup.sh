@@ -170,6 +170,8 @@ EOF
 
     x="/etc/systemd/system/autohotspot.service"
     
+    ! [ -f "$x" ] && sudo touch "$x"
+
     sudo cat < "$x" <<- EOF
     [Unit]
     Description=Automatically generates an internet Hotspot when a valid ssid is not in range
@@ -187,7 +189,7 @@ EOF
             "systemctl (enable autohotspot)"
     fi
 
-    if ! cmd_exists "iw"; then
+    if ! cmd_exists "iw" && ! [ "$TRAVIS" == "true" ]; then
         install_package "iw" "iw"
     fi
 
