@@ -65,7 +65,7 @@ setup_auto_hotspot() {
 
     x="/etc/hostapd/hostapd.conf"
     if [ -e "$x" ]; then
-        cp "$x" "$x".bak
+        sudo cp "$x" "$x".bak
     fi
 
     if [ "$TRAVIS" != "true" ]; then
@@ -105,14 +105,14 @@ EOF
 
     x="/etc/default/hostapd"
     if [ -e "$x" ]; then
-        cp "$x" "$x".bak
+        sudo cp "$x" "$x".bak
     fi
 
     uncomment_str "$x" "#DAEMON_CONF=\"\"" "DAEMON_CONF=\"/etc/hostapd/hostapd.conf\""
 
     x="/etc/dnsmasq.conf"
     if [ -e "$x" ]; then
-        cp "$x" "$x".bak
+        sudo cp "$x" "$x".bak
     fi
 
     cat > "$x" <<- EOF
@@ -136,7 +136,7 @@ EOF
 
     x="/etc/network/interfaces"
     if [ -e "$x" ]; then
-        cp "$x" "$x".bak
+        sudo cp "$x" "$x".bak
     fi
 
     cat > "$x" <<- EOF
@@ -163,7 +163,7 @@ EOF
 
     x="/etc/sysctl.conf"
     if [ -e "$x" ]; then
-        cp "$x" "$x".bak
+        sudo cp "$x" "$x".bak
     fi
 
     uncomment_str "$x" "#net.ipv4.ip_forward=1" "net.ipv4.ip_forward=1"
