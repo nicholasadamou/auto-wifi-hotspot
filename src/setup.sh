@@ -169,6 +169,7 @@ EOF
     uncomment_str "$x" "#net.ipv4.ip_forward=1" "net.ipv4.ip_forward=1"
 
     x="/etc/systemd/system/autohotspot.service"
+    
     sudo cat < "$x" <<- EOF
     [Unit]
     Description=Automatically generates an internet Hotspot when a valid ssid is not in range
