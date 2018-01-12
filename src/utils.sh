@@ -326,11 +326,28 @@ show_spinner() {
 }
 
 uncomment_str() {
-    sed -i "/$2/  s/^#/$3/g" "$1"
+    FILE="$1"
+    KEY="$2"
+
+    sed -i "$FILE" -e "/$KEY/s/#//g"
+}
+
+# see: https://unix.stackexchange.com/a/416596/173825
+add_value_and_uncomment() {
+    FILE="$1"
+    KEY="$2"
+    VALUE="$3"
+
+    sed -i "$FILE" -e "/^$KEY/{s/.//; s|.$|$VALUE\"|}"
 }
 
 replace_str() {
-	sed -i -e "/$2/ s/$3/$4/g" "$1"
+    FILE="$1"
+    KEY="$2"
+    PATTERN="$3"
+    REPLACEMENT="$4"
+
+	sed -i "$FILE" -e "/$KEY/s/$PATTERN/$REPLACEMENT/g"
 }
 
 jq_replace() {
