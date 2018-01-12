@@ -326,13 +326,11 @@ show_spinner() {
 }
 
 uncomment_str() {
-    x="$1"
-    sed -i -e "/"$2"/"$3"/g" "$x"
+    sed -i "s/^#//g" "$1"
 }
 
 replace_str() {
-	x=$1
-	sed -i -e "/$2/ s/$3/$4/g" "$x"
+	sed -i -e "/$2/ s/$3/$4/g" "$1"
 }
 
 jq_replace() {
