@@ -86,7 +86,7 @@ setup_auto_hotspot() {
         fi
     fi
 
-    cat < "$x" <<-- EOL
+    cat > "$x" <<- EOF
     interface=wlan0 
     driver=nl80211 
     ssid="$ssid" 
@@ -97,11 +97,11 @@ setup_auto_hotspot() {
     auth_algs=1 
     ignore_broadcast_ssid=0 
     wpa=2 
-    wpa_passphrase="$paswd1" 
+    wpa_passphrase="$passwd1" 
     wpa_key_mgmt=WPA-PSK 
     wpa_pairwise=TKIP 
     rsn_pairwise=CCMP
-    EOL
+EOF
 
     x="/etc/default/hostapd"
     if [ -e "$x" ]; then
@@ -115,7 +115,7 @@ setup_auto_hotspot() {
         cp "$x" "$x".bak
     fi
 
-    cat < "$x" <<-- EOL
+    cat > "$x" <<- EOF
     #Auto-Hotspot configuration
     interface=wlan0
     no-resolv
@@ -124,7 +124,7 @@ setup_auto_hotspot() {
     domain-needed
     bogus-priv
     dhcp-range=192.168.50.150,192.168.50.200,255.255.255.0,12h
-    EOL
+EOF
 
     ssid="iPhone"
     passwd="dChyym8bmtCKHjEC"
@@ -139,7 +139,7 @@ setup_auto_hotspot() {
         cp "$x" "$x".bak
     fi
 
-    cat < "$x" <<-- EOL
+    cat > "$x" <<- EOF
     # interfaces(5) file used by ifup(8) and ifdown(8)
     # Please note that this file is written to be used with dhcpcd
     # For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
@@ -151,7 +151,7 @@ setup_auto_hotspot() {
     allow-hotplug wlan0
     #iface wlan0 inet manual
         wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-    iface wlan0 inet static
+    iface $interface inet static
             address 192.168.50.5
             netmask 255.255.255.0
             network 192.168.50.0
@@ -159,7 +159,7 @@ setup_auto_hotspot() {
     allow-hotplug wlan1
     iface wlan1 inet manual
         wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-    EOL
+EOF
 
     x="/etc/sysctl.conf"
     if [ -e "$x" ]; then
@@ -169,7 +169,7 @@ setup_auto_hotspot() {
     uncomment_str "$x" "#net.ipv4.ip_forward=1" "net.ipv4.ip_forward=1"
 
     x="/etc/systemd/system/autohotspot.service"
-    cat < "$x" <<-- EOL
+    cat < "$x" <<- EOF
     [Unit]
     Description=Automatically generates an internet Hotspot when a valid ssid is not in range
     After=multi-user.target
@@ -179,7 +179,7 @@ setup_auto_hotspot() {
     ExecStart=/usr/bin/autohotspot
     [Install]
     WantedBy=multi-user.target
-    EOL
+EOF
 
     if cmd_exists "systemctl"; then
         execute "sudo systemctl enable autohotspot.service" \
