@@ -131,8 +131,10 @@ EOF
     interface="wlan0"
     wpa_conf="/etc/wpa_supplicant/wpa_supplicant.conf"
 
-    execute "wpa_passphrase $ssid $passwd > $wpa_conf" \
-        "Configure wpa_supplicant.conf"
+    if [ -f "$wpa_conf" ]; then
+        execute "wpa_passphrase $ssid $passwd > $wpa_conf" \
+            "Configure wpa_supplicant.conf"
+    fi
 
     x="/etc/network/interfaces"
     if [ -e "$x" ]; then
