@@ -108,7 +108,7 @@ EOF
         sudo cp "$x" "$x".bak
     fi
 
-    uncomment_str "$x" "#DAEMON_CONF=\"\""
+    uncomment_str "$x" "#DAEMON_CONF=\"\"" "DAEMON_CONF=\"/etc/hostapd/hostapd.conf\""
 
     x="/etc/dnsmasq.conf"
     if [ -e "$x" ]; then
