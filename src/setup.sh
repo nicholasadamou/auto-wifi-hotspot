@@ -12,7 +12,7 @@ declare skipQuestions=false
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 verify_os() {
-    declare -r MINIMUM_KALI_VERSION="2017.1"
+    declare -r MINIMUM_KALI_VERSION="2016.1"
 
     local OS_NAME=""
     local OS_VERSION=""
@@ -26,9 +26,9 @@ verify_os() {
 
     if [ "$TRAVIS" == "true" ]; then
         return 0
-    elif [ "$OS_NAME" == "Linux" ] && [ -e "/etc/lsb-release" ]; then
-        if [ "$(bash <(cat /etc/os-release; echo "echo ${ID/*, /}"))" == "kali" ]; then
-            OS_VERSION="$(bash <(cat /etc/os-release; echo "echo ${VERSION/*, /}"))"
+    elif [ "$OS_NAME" == "Linux" ] && [ -e "/etc/lsb-release" ] || [ -e "/usr/lib/os-release" ]; then
+        if [ "$(read_os_name)" == "kali" ]; then
+            OS_VERSION="$(get_os_version)"
 
             if [ "$OS_VERSION" == "$MINIMUM_KALI_VERSION" ]; then
                 return 0
@@ -152,7 +152,7 @@ EOF
     iface eth0 inet manual
     allow-hotplug $INTERFACE
     #iface wlan0 inet manual
-        wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
     iface $INTERFACE inet static
             address 192.168.50.5
             netmask 255.255.255.0

@@ -118,6 +118,35 @@ get_answer() {
     printf "%s" "$REPLY"
 }
 
+read_os_name() {
+
+    local conf=""
+
+    if test -r /etc/os-release ; then 
+        conf="/etc/os-release"
+    else 
+        conf="/usr/lib/os-release"
+    fi
+
+    awk -F= '$1=="ID" { print $2 ;}' "$conf" | sed -e 's/^"//' -e 's/"$//'
+
+
+}
+
+read_os_version() {
+
+    local conf=""
+
+    if test -r /etc/os-release ; then 
+        conf="/etc/os-release"
+    else 
+        conf="/usr/lib/os-release"
+    fi
+
+    awk -F= '$1=="VERSION_ID" { print $2 ;}' "$conf" | sed -e 's/^"//' -e 's/"$//'
+
+}
+
 get_os() {
 
     local os=""
@@ -129,8 +158,8 @@ get_os() {
 
     if [ "$TRAVIS" == "true" ]; then
         os="travis"
-    elif [ "$kernelName" == "Linux" ] && [ -e "/etc/lsb-release" ]; then
-        if [ "$(bash <(cat /etc/os-release; echo "echo ${ID/*, /}"))" == "kali" ]; then
+    elif [ "$kernelName" == "Linux" ] && [ -e "/etc/lsb-release" ] || [ -e "/usr/lib/os-release" ]; then
+        if [ "$(read_os_name)" == "kali" ]; then
             os="kali"
         fi
     else
@@ -143,19 +172,8 @@ get_os() {
 
 get_os_version() {
 
-    local os=""
-    local os_version=""
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    os="$(get_os)"
-
-    if [ "$os" == "kali" ]; then
-        os_version="$(bash <(cat /etc/os-release; echo "echo ${VERSION/*, /}"))"
-    fi
-
-    printf "%s" "$os_version"
-
+    printf "%s" read_os_version
+  
 }
 
 is_git_repository() {
