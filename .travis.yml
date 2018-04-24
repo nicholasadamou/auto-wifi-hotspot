@@ -4,7 +4,7 @@
 # https://docs.travis-ci.com
 
 before_install:
-  - chmod +x ./test/customize_environment.sh ./test/main.sh ./src/bin/autohotspot ./src/setup.sh ./src/utils.sh
+  - chmod +x ./test/customize_environment.sh ./test/main.sh ./src/bin/autohotspot ./src/setup.sh
   - ./test/customize_environment.sh
 
 install:

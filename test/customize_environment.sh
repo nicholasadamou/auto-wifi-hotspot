@@ -11,14 +11,14 @@ if [ "$TRAVIS_OS_NAME" = "linux" ]; then
 
     sudo add-apt-repository multiverse
     sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu/ trusty-backports restricted main universe"
-    sudo apt-get update -qqy
+    sudo apt update -qqy
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     # Install `ShellCheck`
     # (required for testing).
 
-    sudo apt-get install -qqy shellcheck
+    sudo apt install -qqy shellcheck
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

@@ -7,44 +7,14 @@
 #the hotspot and network without a reboot.
 #see: http://www.raspberryconnect.com/network/item/330-raspberry-pi-auto-wifi-hotspot-switch-internet
 
+declare BASH_UTILS_URL="https://raw.githubusercontent.com/nicholasadamou/bash-utils/master/utils.sh"
+
 declare skipQuestions=false
 
+trap "exit 1" TERM
+export TOP_PID=$$
+
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-verify_os() {
-    declare -r MINIMUM_KALI_VERSION="2016.1"
-
-    local OS_NAME=""
-    local OS_VERSION=""
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    # Check if the OS is `Kali-Linux` and
-    # it's above the required version.
-
-    OS_NAME="$(uname -s)"
-
-    if [ "$TRAVIS" == "true" ]; then
-        return 0
-    elif [ "$OS_NAME" == "Linux" ] && [ -e "/etc/lsb-release" ] || [ -e "/usr/lib/os-release" ]; then
-        if [ "$(read_os_name)" == "kali" ]; then
-            OS_VERSION="$(get_os_version)"
-
-            if [ "$OS_VERSION" == "$MINIMUM_KALI_VERSION" ]; then
-                return 0
-            else
-                printf "Sorry, this script is intended only for Kali-Linux %s+" "$MINIMUM_KALI_VERSION"
-            fi
-        fi
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    else
-        printf "Sorry, this script is intended only for Kali-Linux!"
-    fi
-
-    return 1
-}
 
 setup_auto_hotspot() {
     update
@@ -53,10 +23,23 @@ setup_auto_hotspot() {
     declare -a PKGS=(
         "hostapd"
         "dnsmasq"
+        "network-manager"
+        "wicd-cli"
+        "wicd-curses"
+        "iw"
+        "iptables-persistent"
     )
 
     for PKG in "${PKGS[@]}"; do
         install_package "$PKG" "$PKG"
+    done
+
+    declare -a PKGS_TO_DISABLE=(
+        "hostapd"
+        "dnsmasq"
+    )
+
+    for PKG in "${PKGS_TO_DISABLE[@]}"; do 
         if cmd_exists "systemctl"; then
             execute "sudo systemctl disable $PKG" \
                 "systemctl (disable $PKG)"
@@ -69,15 +52,15 @@ setup_auto_hotspot() {
     fi
 
     if [ "$TRAVIS" != "true" ]; then
-        print_question "Enter an SSID: "
+        print_question "Enter an SSID for the HostAPD Hotspot: "
         SSID="$(read -r)"
 
         PASSWD1="0"
         PASSWD2="1"
         until [ $PASSWD1 == $PASSWD2 ]; do
-            print_question "Type a password to access your PiFi network, then press [ENTER]: "
+            print_question "Type a password to access your "$SSID", then press [ENTER]: "
             read -s -r PASSWD1
-            print_question "Verify password to access your PiFi network, then press [ENTER]: "
+            print_question "Verify password to access your "$SSID", then press [ENTER]: "
             read -s -r PASSWD2
         done
 
@@ -98,7 +81,7 @@ setup_auto_hotspot() {
     ignore_broadcast_ssid=0 
     wpa=2 
     wpa_passphrase="$PASSWD1" 
-    wpa_key_mgmt=WPA-PSK 
+    wpa_key_mgmt=WPA2-PSK 
     wpa_pairwise=TKIP 
     rsn_pairwise=CCMP
 EOF
@@ -120,20 +103,42 @@ EOF
     interface=wlan0
     no-resolv
     bind-dynamic 
-    server=8.8.8.8
+    server=1.1.1.1 #cloudflare DNS
     domain-needed
     bogus-priv
     dhcp-range=192.168.50.150,192.168.50.200,255.255.255.0,12h
 EOF
 
-    SSID="iPhone"
-    PASSWD="dChyym8bmtCKHjEC"
-    INTERFACE="wlan0"
-    WPA_CONF="/etc/wpa_supplicant/wpa_supplicant.conf"
+    if [ "$TRAVIS" != "true" ]; then
+        INTERFACE="wlan0"
 
-    if [ -f "$WPA_CONF" ]; then
-        execute "wpa_passphrase $SSID $PASSWD > $WPA_CONF" \
-            "Configure wpa_supplicant.conf"
+        nmcli dev wifi list
+
+        print_question "Enter an SSID: "
+        SSID="$(read -r)"
+
+        until [ nmcli dev wifi list | grep "$SSID" ]; do
+            print_question "Enter a correct SSID as shown on the screen: "
+            SSID="$(read -r)"
+        done
+
+        PASSWD1="0"
+        PASSWD2="1"
+        until [ $PASSWD1 == $PASSWD2 ]; do
+            print_question "Type a password to access "$SSID", then press [ENTER]: "
+            read -s -r PASSWD1
+            print_question "Verify password to access "$SSID", then press [ENTER]: "
+            read -s -r PASSWD2
+        done
+
+        if [ "$PASSWD1" == "$PASSWD2" ]; then
+            WPA_CONF="/etc/wpa_supplicant/wpa_supplicant.conf"
+
+            if [ -f "$WPA_CONF" ]; then
+                execute "wpa_passphrase $SSID $PASSWD1 > $WPA_CONF" \
+                    "Configure wpa_supplicant.conf"
+            fi
+        fi
     fi
 
     FILE="/etc/network/interfaces"
@@ -191,10 +196,6 @@ EOF
             "systemctl (enable autohotspot)"
     fi
 
-    if ! cmd_exists "iw" && ! [ "$TRAVIS" == "true" ]; then
-        install_package "iw" "iw"
-    fi
-
     execute "sudo cp ./bin/autohotspot /usr/bin/autohotspot \
         && sudo chmod +x /usr/bin/autohotspot" \
         "cp ./bin/autohotspot -> /usr/bin/autohotspot"
@@ -213,15 +214,7 @@ main() {
     # are made relative to this file's path.
 
     cd "$(dirname "${BASH_SOURCE[0]}")" \
-        && . "utils.sh" \
-        || exit 1
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    # Ensure the OS is supported and
-    # it's above the required version.
-
-    verify_os \
+        && source <(curl -s "$BASH_UTILS_URL") \
         || exit 1
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
