@@ -24,10 +24,6 @@ setup_auto_hotspot() {
         "hostapd"
         "dnsmasq"
         "network-manager"
-        "wicd-cli"
-        "wicd-curses"
-        "iw"
-        "iptables-persistent"
     )
 
     for PKG in "${PKGS[@]}"; do
