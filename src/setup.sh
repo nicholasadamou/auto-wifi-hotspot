@@ -113,11 +113,6 @@ EOF
         print_question "Enter an SSID: "
         SSID="$(read -r)"
 
-        until [ nmcli dev wifi list | grep "$SSID" ]; do
-            print_question "Enter a correct SSID as shown on the screen: "
-            SSID="$(read -r)"
-        done
-
         PASSWD1="0"
         PASSWD2="1"
         until [ $PASSWD1 == $PASSWD2 ]; do
