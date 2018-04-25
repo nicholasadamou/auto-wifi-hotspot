@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#Raspberry Pi - Auto WiFi Hotspot Switch Internet
-#A script to allow the Raspberry Pi to connect to a know wifi router or 
-#automatically generate an Internet Hotspot Access Point if no network 
-#is found. You can then use SSH or VNC on the move and switch between 
-#the hotspot and network without a reboot.
-#see: http://www.raspberryconnect.com/network/item/330-raspberry-pi-auto-wifi-hotspot-switch-internet
+# Raspberry Pi - Auto WiFi Hotspot Switch Internet
+# A script to allow the Raspberry Pi to connect to a know wifi router or 
+# automatically generate an Internet Hotspot Access Point if no network 
+# is found. You can then use SSH or VNC on the move and switch between 
+# the hotspot and network without a reboot.
+# see: http://www.raspberryconnect.com/network/item/330-raspberry-pi-auto-wifi-hotspot-switch-internet
 
 declare BASH_UTILS_URL="https://raw.githubusercontent.com/nicholasadamou/bash-utils/master/utils.sh"
 
