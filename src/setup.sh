@@ -7,7 +7,7 @@
 # the hotspot and network without a reboot.
 # see: http://www.raspberryconnect.com/network/item/330-raspberry-pi-auto-wifi-hotspot-switch-internet
 
-declare BASH_UTILS_URL="https://raw.githubusercontent.com/nicholasadamou/Dotfile-Utilities/master/utils.sh"
+declare BASH_UTILS_URL="https://raw.githubusercontent.com/nicholasadamou/utilities/linux/utils.sh"
 
 declare skipQuestions=false
 
