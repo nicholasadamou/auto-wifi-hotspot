@@ -1,4 +1,4 @@
-# Auto-WiFi-Hotspot [![Build Status](https://travis-ci.org/nicholasadamou/Raspberry-Pi-Auto-WiFi-Hotspot-Switch-Internet.svg?branch=master)](https://travis-ci.org/nicholasadamou/Raspberry-Pi-Auto-WiFi-Hotspot-Switch-Internet)
+# Auto-WiFi-Hotspot
 
 ![license](https://img.shields.io/apm/l/vim-mode.svg)
 [![Say Thanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/NicholasAdamou)
