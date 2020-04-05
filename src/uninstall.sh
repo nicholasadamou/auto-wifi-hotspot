@@ -12,8 +12,8 @@ declare -r BASH_UTILS_URL="https://raw.githubusercontent.com/nicholasadamou/util
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 uninstall_auto_hotspot() {
-	update
-    upgrade
+	apt_update
+    apt_upgrade
 
 	declare -a PKGS=(
         "hostapd"
@@ -37,7 +37,11 @@ uninstall_auto_hotspot() {
 
 	for file in "${FILES_TO_DELETE[@]}"; do
 		[[ -e "$file" ]] && {
-			sudo rm -rf "$file"
+			ask_for_confirmation "Do you want to remove ${file}?"
+
+			if answer_is_yes; then
+				sudo rm -rf "$file"
+			fi
 
 			[[ -e "$file.bak" ]] && \
 				mv "$file.bak" "$file"
