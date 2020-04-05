@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Raspberry Pi - Auto WiFi Hotspot Switch Internet
+# shellcheck disable=SC1090
+
+# Raspberry Pi - Auto WiFi Hotspot Switch Internet (Installer)
 # A script to allow the Raspberry Pi to connect to a know wifi router or
 # automatically generate an Internet Hotspot Access Point if no network
 # is found. You can then use SSH or VNC on the move and switch between
@@ -41,16 +43,19 @@ setup_auto_hotspot() {
         sudo cp "$FILE" "$FILE".bak
     fi
 
-    print_question "Enter an SSID for the HostAPD Hotspot: "
-    SSID="$(read -r)"
+    ask "Enter an SSID for the HostAPD Hotspot: "
+    SSID="$(get_answer)"
 
     PASSWD1="0"
     PASSWD2="1"
     until [ $PASSWD1 == $PASSWD2 ]; do
         print_question "Type a password to access your $SSID, then press [ENTER]: "
-        read -s -r PASSWD1
+        read -s -r
+		PASSWD1="$(get_answer)"
+
         print_question "Verify password to access your $SSID, then press [ENTER]: "
-        read -s -r PASSWD2
+        read -s -r
+		PASSWD2="$(get_answer)"
     done
 
     if [ "$PASSWD1" == "$PASSWD2" ]; then
@@ -102,16 +107,20 @@ EOF
 
     nmcli dev wifi list
 
-    print_question "Enter an SSID: "
-    SSID="$(read -r)"
+    ask "Enter an SSID: "
+    SSID="$(get_answer)"
 
     PASSWD1="0"
     PASSWD2="1"
     until [ $PASSWD1 == $PASSWD2 ]; do
         print_question "Type a password to access $SSID, then press [ENTER]: "
-        read -s -r PASSWD1
+        read -s -r
+		PASSWD1="$(get_answer)"
+
         print_question "Verify password to access $SSID, then press [ENTER]: "
-        read -s -r PASSWD2
+        read -s -r
+		PASSWD2="$(get_answer)"
+
     done
 
     if [ "$PASSWD1" == "$PASSWD2" ]; then
@@ -189,12 +198,10 @@ restart() {
 }
 
 main() {
-    # Ensure that the following actions
-    # are made relative to this file's path.
+    # Ensure that the bash utilities functions have
+	# been sourced.
 
-    cd "$(dirname "${BASH_SOURCE[0]}")" \
-        && source <(curl -s "$BASH_UTILS_URL") \
-        || exit 1
+    source <(curl -s "$BASH_UTILS_URL")
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 

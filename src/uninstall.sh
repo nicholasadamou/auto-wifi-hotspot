@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Raspberry Pi - Auto WiFi Hotspot Switch Internet
+# shellcheck disable=SC1090
+
+# Raspberry Pi - Auto WiFi Hotspot Switch Internet (Uninstaller)
 # A script to allow the Raspberry Pi to connect to a know wifi router or
 # automatically generate an Internet Hotspot Access Point if no network
 # is found. You can then use SSH or VNC on the move and switch between
@@ -36,16 +38,15 @@ uninstall_auto_hotspot() {
 	)
 
 	for file in "${FILES_TO_DELETE[@]}"; do
-		[[ -e "$file" ]] && {
-			ask_for_confirmation "Do you want to remove ${file}?"
+		ask_for_confirmation "Do you want to remove ${file}?"
 
-			if answer_is_yes; then
-				sudo rm -rf "$file"
-			fi
+		if answer_is_yes; then
+			sudo rm -rf "$file"
+		fi
 
-			[[ -e "$file.bak" ]] && \
-				mv "$file.bak" "$file"
-		}
+		if [[ -e "$file" ]] && [[ -e "$file.bak" ]]; then
+			mv "$file.bak" "$file"
+		fi
 	done
 }
 
