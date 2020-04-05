@@ -12,8 +12,8 @@ declare BASH_UTILS_URL="https://raw.githubusercontent.com/nicholasadamou/utiliti
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 setup_auto_hotspot() {
-    update
-    upgrade
+    apt_update
+    apt_upgrade
 
     declare -a PKGS=(
         "hostapd"
