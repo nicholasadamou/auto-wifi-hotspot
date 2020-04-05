@@ -3,7 +3,7 @@
 ![license](https://img.shields.io/apm/l/vim-mode.svg)
 [![Say Thanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/NicholasAdamou)
 
-A script to allow the Raspberry Pi to connect to a know WiFi router or automatically generate an Internet Hotspot Access Point if no network is found. You can then use `SSH` or `VNC` on the move and switch between the hotspot and network without a reboot.
+A script to allow the Raspberry Pi to connect to a known WiFi network or automatically generate an Internet Hotspot Access Point if no network is found. You can then use `SSH` or `VNC` on the move and switch between the hotspot and network without a reboot.
 
 What it Sets Up
 ------------
@@ -44,7 +44,7 @@ More Information
 License
 -------
 
-Auto-WiFi-Hotspot is © 2018 Nicholas Adamou.
+Auto-WiFi-Hotspot is © 2020 Nicholas Adamou.
 
 It is free software, and may be redistributed under the terms specified in the [LICENSE] file.
 
