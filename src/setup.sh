@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Raspberry Pi - Auto WiFi Hotspot Switch Internet
-# A script to allow the Raspberry Pi to connect to a know wifi router or 
-# automatically generate an Internet Hotspot Access Point if no network 
-# is found. You can then use SSH or VNC on the move and switch between 
+# A script to allow the Raspberry Pi to connect to a know wifi router or
+# automatically generate an Internet Hotspot Access Point if no network
+# is found. You can then use SSH or VNC on the move and switch between
 # the hotspot and network without a reboot.
 # see: http://www.raspberryconnect.com/network/item/330-raspberry-pi-auto-wifi-hotspot-switch-internet
 
@@ -30,10 +30,9 @@ setup_auto_hotspot() {
         "dnsmasq"
     )
 
-    for PKG in "${PKGS_TO_DISABLE[@]}"; do 
+    for PKG in "${PKGS_TO_DISABLE[@]}"; do
         if cmd_exists "systemctl"; then
-            execute "sudo systemctl disable $PKG" \
-                "systemctl (disable $PKG)"
+            sudo systemctl disable "$PKG"
         fi
     done
 
@@ -59,19 +58,19 @@ setup_auto_hotspot() {
     fi
 
     cat > "$FILE" <<- EOF
-    interface=wlan0 
-    driver=nl80211 
-    ssid="$SSID" 
-    hw_mode=g 
-    channel=6 
-    wmm_enabled=0 
-    macaddr_acl=0 
-    auth_algs=1 
-    ignore_broadcast_ssid=0 
-    wpa=2 
-    wpa_passphrase="$PASSWD1" 
-    wpa_key_mgmt=WPA2-PSK 
-    wpa_pairwise=TKIP 
+    interface=wlan0
+    driver=nl80211
+    ssid="$SSID"
+    hw_mode=g
+    channel=6
+    wmm_enabled=0
+    macaddr_acl=0
+    auth_algs=1
+    ignore_broadcast_ssid=0
+    wpa=2
+    wpa_passphrase="$PASSWD1"
+    wpa_key_mgmt=WPA2-PSK
+    wpa_pairwise=TKIP
     rsn_pairwise=CCMP
 EOF
 
@@ -91,7 +90,7 @@ EOF
     #Auto-Hotspot configuration
     interface=wlan0
     no-resolv
-    bind-dynamic 
+    bind-dynamic
     server=1.1.1.1 #cloudflare DNS
     domain-needed
     bogus-priv
@@ -119,11 +118,10 @@ EOF
         WPA_CONF="/etc/wpa_supplicant/wpa_supplicant.conf"
 
         if [ -f "$WPA_CONF" ]; then
-            execute "wpa_passphrase $SSID $PASSWD1 > $WPA_CONF" \
-                "Configure wpa_supplicant.conf"
+            wpa_passphrase "$SSID" "$PASSWD1" > $WPA_CONF
         fi
     fi
-    
+
     FILE="/etc/network/interfaces"
     if [ -e "$FILE" ]; then
         sudo cp "$FILE" "$FILE".bak
@@ -159,7 +157,7 @@ EOF
     uncomment_str "$FILE" "#net.ipv4.ip_forward=1"
 
     FILE="/etc/systemd/system/autohotspot.service"
-    
+
     ! [ -f "$FILE" ] && sudo touch "$FILE"
 
     cat > "$FILE" <<- EOF
@@ -175,18 +173,16 @@ EOF
 EOF
 
     if cmd_exists "systemctl"; then
-        execute "sudo systemctl enable autohotspot.service" \
-            "systemctl (enable autohotspot)"
+        sudo systemctl enable autohotspot.service
     fi
 
-    execute "sudo cp ./bin/autohotspot /usr/bin/autohotspot \
-        && sudo chmod +x /usr/bin/autohotspot" \
-        "cp ./bin/autohotspot -> /usr/bin/autohotspot"
+	sudo cp ./bin/autohotspot /usr/bin/autohotspot \
+        && sudo chmod +x /usr/bin/autohotspot
 }
 
 restart() {
     ask_for_confirmation "Do you want to restart?"
-    
+
     if answer_is_yes; then
         sudo shutdown -r now &> /dev/null
     fi
@@ -209,7 +205,7 @@ main() {
     setup_auto_hotspot
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+
     restart
 }
 
