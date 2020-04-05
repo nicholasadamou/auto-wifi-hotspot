@@ -41,7 +41,9 @@ setup_auto_hotspot() {
     FILE="/etc/hostapd/hostapd.conf"
     if [ -e "$FILE" ]; then
         sudo cp "$FILE" "$FILE".bak
-    fi
+    else
+		touch "$FILE"
+	fi
 
     ask "Enter an SSID for the HostAPD Hotspot: "
     SSID="$(get_answer)"
@@ -86,14 +88,16 @@ EOF
     FILE="/etc/default/hostapd"
     if [ -e "$FILE" ]; then
         sudo cp "$FILE" "$FILE".bak
-    fi
+	fi
 
     add_value_and_uncomment "$FILE" "#DAEMON_CONF=\"\"" "/etc/hostapd/hostapd.conf"
 
     FILE="/etc/dnsmasq.conf"
     if [ -e "$FILE" ]; then
         sudo cp "$FILE" "$FILE".bak
-    fi
+    else
+		touch "$FILE"
+	fi
 
     cat > "$FILE" <<- EOF
     #Auto-Hotspot configuration
