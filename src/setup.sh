@@ -64,7 +64,7 @@ setup_auto_hotspot() {
         print_success "Password set. Edit $FILE to change."
     fi
 
-    cat > "$FILE" <<- EOF
+    sudo bash -c "cat > $FILE" <<- EOF
     interface=wlan0
     driver=nl80211
     ssid="$SSID"
@@ -93,7 +93,7 @@ EOF
         sudo cp "$FILE" "$FILE".bak
 	fi
 
-    cat > "$FILE" <<- EOF
+    sudo bash -c "cat > $FILE" <<- EOF
     # Auto-Hotspot configuration
     interface=wlan0
     no-resolv
@@ -137,7 +137,7 @@ EOF
         sudo cp "$FILE" "$FILE".bak
     fi
 
-    cat > "$FILE" <<- EOF
+    sudo bash -c "cat > $FILE" <<- EOF
     # interfaces(5) file used by ifup(8) and ifdown(8)
     # Please note that this file is written to be used with dhcpcd
     # For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
@@ -170,7 +170,7 @@ EOF
 
     ! [ -f "$FILE" ] && sudo touch "$FILE"
 
-    cat > "$FILE" <<- EOF
+    sudo bash -c "cat > $FILE" <<- EOF
     [Unit]
     Description=Automatically generates an internet Hotspot when a valid SSID is not in range
     After=multi-user.target
