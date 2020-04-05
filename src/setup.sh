@@ -39,11 +39,7 @@ setup_auto_hotspot() {
     done
 
     FILE="/etc/hostapd/hostapd.conf"
-    if [ -e "$FILE" ]; then
-        sudo cp "$FILE" "$FILE".bak
-    else
-		touch "$FILE"
-	fi
+    sudo touch "$FILE"
 
     ask "Enter an SSID for the HostAPD Hotspot: "
     SSID="$(get_answer)"
@@ -95,25 +91,22 @@ EOF
     FILE="/etc/dnsmasq.conf"
     if [ -e "$FILE" ]; then
         sudo cp "$FILE" "$FILE".bak
-    else
-		touch "$FILE"
 	fi
 
     cat > "$FILE" <<- EOF
-    #Auto-Hotspot configuration
+    # Auto-Hotspot configuration
     interface=wlan0
     no-resolv
     bind-dynamic
-    server=1.1.1.1 #cloudflare DNS
+    server=1.1.1.1 # Cloudflare DNS
     domain-needed
     bogus-priv
     dhcp-range=192.168.50.150,192.168.50.200,255.255.255.0,12h
 EOF
 
-
     INTERFACE="wlan0"
 
-    nmcli dev wifi list
+    nmcli device wifi list
 
     ask "Enter an SSID: "
     SSID="$(get_answer)"
@@ -179,7 +172,7 @@ EOF
 
     cat > "$FILE" <<- EOF
     [Unit]
-    Description=Automatically generates an internet Hotspot when a valid ssid is not in range
+    Description=Automatically generates an internet Hotspot when a valid SSID is not in range
     After=multi-user.target
     [Service]
     Type=oneshot
