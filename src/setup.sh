@@ -49,13 +49,17 @@ setup_auto_hotspot() {
     PASSWD1="0"
     PASSWD2="1"
     until [ $PASSWD1 == $PASSWD2 ]; do
-        print_question "Type a password to access your $SSID, then press [ENTER]: "
+        print_question "Type a password to access '$SSID', then press [ENTER]: "
         read -s -r
 		PASSWD1="$(get_answer)"
 
-        print_question "Verify password to access your $SSID, then press [ENTER]: "
+		printf "\n"
+
+        print_question "Verify password to access '$SSID', then press [ENTER]: "
         read -s -r
 		PASSWD2="$(get_answer)"
+
+		printf "\n"
     done
 
     if [ "$PASSWD1" == "$PASSWD2" ]; then
