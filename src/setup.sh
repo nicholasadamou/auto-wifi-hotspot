@@ -22,7 +22,7 @@ setup_auto_hotspot() {
     )
 
     for PKG in "${PKGS[@]}"; do
-        install_package "$PKG" "$PKG"
+        install_package "$PKG"
     done
 
     declare -a PKGS_TO_DISABLE=(
