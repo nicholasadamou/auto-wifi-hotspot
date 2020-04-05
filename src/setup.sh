@@ -9,11 +9,6 @@
 
 declare BASH_UTILS_URL="https://raw.githubusercontent.com/nicholasadamou/utilities/master/utilities.sh"
 
-declare skipQuestions=false
-
-trap "exit 1" TERM
-export TOP_PID=$$
-
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 setup_auto_hotspot() {
@@ -47,22 +42,20 @@ setup_auto_hotspot() {
         sudo cp "$FILE" "$FILE".bak
     fi
 
-    if [ "$TRAVIS" != "true" ]; then
-        print_question "Enter an SSID for the HostAPD Hotspot: "
-        SSID="$(read -r)"
+    print_question "Enter an SSID for the HostAPD Hotspot: "
+    SSID="$(read -r)"
 
-        PASSWD1="0"
-        PASSWD2="1"
-        until [ $PASSWD1 == $PASSWD2 ]; do
-            print_question "Type a password to access your $SSID, then press [ENTER]: "
-            read -s -r PASSWD1
-            print_question "Verify password to access your $SSID, then press [ENTER]: "
-            read -s -r PASSWD2
-        done
+    PASSWD1="0"
+    PASSWD2="1"
+    until [ $PASSWD1 == $PASSWD2 ]; do
+        print_question "Type a password to access your $SSID, then press [ENTER]: "
+        read -s -r PASSWD1
+        print_question "Verify password to access your $SSID, then press [ENTER]: "
+        read -s -r PASSWD2
+    done
 
-        if [ "$PASSWD1" == "$PASSWD2" ]; then
-            print_success "Password set. Edit $FILE to change."
-        fi
+    if [ "$PASSWD1" == "$PASSWD2" ]; then
+        print_success "Password set. Edit $FILE to change."
     fi
 
     cat > "$FILE" <<- EOF
@@ -105,33 +98,32 @@ EOF
     dhcp-range=192.168.50.150,192.168.50.200,255.255.255.0,12h
 EOF
 
-    if [ "$TRAVIS" != "true" ]; then
-        INTERFACE="wlan0"
 
-        nmcli dev wifi list
+    INTERFACE="wlan0"
 
-        print_question "Enter an SSID: "
-        SSID="$(read -r)"
+    nmcli dev wifi list
 
-        PASSWD1="0"
-        PASSWD2="1"
-        until [ $PASSWD1 == $PASSWD2 ]; do
-            print_question "Type a password to access $SSID, then press [ENTER]: "
-            read -s -r PASSWD1
-            print_question "Verify password to access $SSID, then press [ENTER]: "
-            read -s -r PASSWD2
-        done
+    print_question "Enter an SSID: "
+    SSID="$(read -r)"
 
-        if [ "$PASSWD1" == "$PASSWD2" ]; then
-            WPA_CONF="/etc/wpa_supplicant/wpa_supplicant.conf"
+    PASSWD1="0"
+    PASSWD2="1"
+    until [ $PASSWD1 == $PASSWD2 ]; do
+        print_question "Type a password to access $SSID, then press [ENTER]: "
+        read -s -r PASSWD1
+        print_question "Verify password to access $SSID, then press [ENTER]: "
+        read -s -r PASSWD2
+    done
 
-            if [ -f "$WPA_CONF" ]; then
-                execute "wpa_passphrase $SSID $PASSWD1 > $WPA_CONF" \
-                    "Configure wpa_supplicant.conf"
-            fi
+    if [ "$PASSWD1" == "$PASSWD2" ]; then
+        WPA_CONF="/etc/wpa_supplicant/wpa_supplicant.conf"
+
+        if [ -f "$WPA_CONF" ]; then
+            execute "wpa_passphrase $SSID $PASSWD1 > $WPA_CONF" \
+                "Configure wpa_supplicant.conf"
         fi
     fi
-
+    
     FILE="/etc/network/interfaces"
     if [ -e "$FILE" ]; then
         sudo cp "$FILE" "$FILE".bak
@@ -210,11 +202,6 @@ main() {
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    skip_questions "$@" \
-        && skipQuestions=true
-
-    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
     ask_for_sudo
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,9 +210,7 @@ main() {
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     
-    if ! $skipQuestions; then
-        restart
-    fi
+    restart
 }
 
-main "$@"
+main
