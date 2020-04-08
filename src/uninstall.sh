@@ -59,12 +59,10 @@ restart() {
 }
 
 main() {
-    # Ensure that the following actions
-    # are made relative to this file's path.
+    # Ensure that the bash utilities functions have
+    # been sourced.
 
-    cd "$(dirname "${BASH_SOURCE[0]}")" \
-        && source <(curl -s "$BASH_UTILS_URL") \
-        || exit 1
+    source <(curl -s "$BASH_UTILS_URL")
 
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
