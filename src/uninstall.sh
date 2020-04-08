@@ -44,7 +44,7 @@ uninstall_auto_hotspot() {
 			sudo rm -rf "$file"
 		fi
 
-		if [[ -e "$file" ]] && [[ -e "$file.bak" ]]; then
+		if [[ -e "$file.bak" ]]; then
 			mv "$file.bak" "$file"
 		fi
 	done
