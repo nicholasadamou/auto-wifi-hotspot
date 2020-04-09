@@ -3,7 +3,7 @@
 ![license](https://img.shields.io/apm/l/vim-mode.svg)
 [![Say Thanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/NicholasAdamou)
 
-A script to allow the Raspberry Pi to connect to a known WiFi network or automatically generate an Internet Hotspot Access Point if no network is found. You can then use `SSH` or `VNC` on the move and switch between the hotspot and network without a reboot.
+A script to allow the Raspberry Pi to connect to a known WiFi network or automatically generate an Access Point if no network is found. You can then use `SSH` or `VNC` on the move and switch between the hotspot and network without a reboot.
 
 What it Sets Up
 ------------
